@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>総観場 速報（自動更新プロトタイプ）</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font-family: system-ui, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+    line-height: 1.7; margin: 0; padding: 24px;
+    max-width: 960px; margin-inline: auto;
+  }
+  h1 { font-size: 1.3rem; margin: 0 0 4px; }
+  .meta { color: #666; font-size: .9rem; margin-bottom: 20px; }
+  .meta strong { color: inherit; }
+  figure { margin: 0 0 28px; }
+  figure img {
+    width: 100%; height: auto; border: 1px solid #ddd; border-radius: 8px;
+    background: #fff;
+  }
+  figcaption { font-size: .9rem; color: #555; margin-top: 6px; }
+  .note { font-size: .8rem; color: #888; border-top: 1px solid #ddd; padding-top: 12px; }
+  .err { color: #b00; }
+</style>
+</head>
+<body>
+  <h1>総観場 速報（自動更新プロトタイプ）</h1>
+  <p class="meta" id="meta">読み込み中…</p>
+
+  <div id="figs"></div>
+
+  <p class="note">
+    データ: ECMWF IFS open data (CC BY 4.0)。
+    このページは静的ファイルのみ。図は定期実行（GitHub Actions）で事前生成し、
+    次の初期時刻ぶんが出るまで保持しています。閲覧時にサーバー計算は走りません。
+  </p>
+
+<script>
+(async () => {
+  const meta = document.getElementById('meta');
+  const figs = document.getElementById('figs');
+  try {
+    const r = await fetch('manifest.json?_=' + Date.now());
+    if (!r.ok) throw new Error(r.status);
+    const m = await r.json();
+
+    const gen = new Date(m.generated_at);
+    const nxt = m.next_update_expected ? new Date(m.next_update_expected) : null;
+    const j = d => d.toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo',
+      month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+    meta.innerHTML =
+      `<strong>${m.init_time_jst || m.init_time}</strong>` +
+      ` ／ 図の生成: ${j(gen)}` +
+      (nxt ? ` ／ 次回更新の目安: ${j(nxt)}以降` : '');
+
+    figs.innerHTML = '';
+    for (const f of (m.figures || [])) {
+      const fig = document.createElement('figure');
+      const img = document.createElement('img');
+      img.src = f.file + '?v=' + encodeURIComponent(m.init_time);
+      img.alt = f.title;
+      img.loading = 'lazy';
+      const cap = document.createElement('figcaption');
+      cap.textContent = f.title;
+      fig.append(img, cap);
+      figs.append(fig);
+    }
+  } catch (e) {
+    meta.innerHTML = '<span class="err">manifest を読み込めませんでした（' + e + '）</span>';
+  }
+})();
+</script>
+</body>
+</html>
