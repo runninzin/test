@@ -1,0 +1,42 @@
+name: update-figs
+on:
+  schedule:
+    - cron: "15 8 * * *"
+    - cron: "30 11 * * *"
+    - cron: "15 20 * * *"
+    - cron: "30 23 * * *"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "同じサイクルでも作り直す"
+        type: boolean
+        default: false
+concurrency:
+  group: update-figs
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: font
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq fonts-noto-cjk
+      - name: env
+        uses: mamba-org/setup-micromamba@v2
+        with:
+          environment-file: environment.yml
+          cache-environment: true
+      - name: make figs
+        shell: bash -el {0}
+        run: python scripts/make_figs.py ${{ (github.event.inputs.force == 'true') && '--force' || '' }}
+      - name: commit
+        run: |
+          git add docs/
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "figs: $(jq -r .init_time docs/manifest.json)"
+          git push
