@@ -1,12 +1,18 @@
 {
   "init_time": "2026-09-01T00:00:00Z",
   "init_time_jst": "2026-09-01 09:00 JST 初期値",
-  "generated_at": "2026-09-01T08:47:11Z",
+  "generated_at": "2026-09-01T10:26:48Z",
   "next_cycle": "2026-09-01T06:00:00Z",
   "next_update_expected": "2026-09-01T13:00:00Z",
   "source": "ECMWF IFS open data (CC BY 4.0)",
   "figures": [
-    { "file": "figs/500hPa.png", "title": "500 hPa 高度・絶対渦度" },
-    { "file": "figs/850hPa.png", "title": "地上気圧・850 hPa 気温・風" }
+    {
+      "file": "figs/500hPa.png",
+      "title": "500 hPa 高度・絶対渦度"
+    },
+    {
+      "file": "figs/850hPa.png",
+      "title": "地上気圧・850 hPa 気温・風"
+    }
   ]
 }
