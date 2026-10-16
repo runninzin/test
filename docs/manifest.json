@@ -1,9 +1,9 @@
 {
-  "init_time": "2026-10-15T12:00:00Z",
-  "init_time_jst": "2026-10-15 21:00 JST 初期値",
-  "generated_at": "2026-10-15T23:01:47Z",
-  "next_cycle": "2026-10-15T18:00:00Z",
-  "next_update_expected": "2026-10-16T01:00:00Z",
+  "init_time": "2026-10-15T18:00:00Z",
+  "init_time_jst": "2026-10-16 03:00 JST 初期値",
+  "generated_at": "2026-10-16T01:36:06Z",
+  "next_cycle": "2026-10-16T00:00:00Z",
+  "next_update_expected": "2026-10-16T07:00:00Z",
   "source": "ECMWF IFS open data (CC BY 4.0)",
   "figures": [
     {
